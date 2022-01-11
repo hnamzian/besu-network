@@ -1,20 +1,21 @@
 ---
 version: '3.6'
 
+x-besu-common-env: &besu-common-env
+  BESU_CONFIG_FILE: /config/config.toml
+  BESU_GENESIS_FILE: /config/genesis.json
+  BESU_NODE_PRIVATE_KEY_FILE: /opt/besu/keys/nodekey
+  BESU_MIN_GAS_PRICE: 0
+  BESU_RPC_HTTP_API: EEA,WEB3,ETH,NET,TRACE,DEBUG,ADMIN,PRIV,PERM,${BESU_CONS_ALGO:-IBFT}
+  BESU_RPC_WS_API: EEA,WEB3,ETH,NET,TRACE,DEBUG,ADMIN,PRIV,PERM,${BESU_CONS_ALGO:-IBFT} 
+
+
 x-besu-bootnode-def:
   &besu-bootnode-def
   restart: "on-failure"
   image: hyperledger/besu:${BESU_VERSION:-latest}
   env_file:
     - ./config/besu/.env
-  environment:
-      - OTEL_RESOURCE_ATTRIBUTES=service.name=validator1,service.version=${BESU_VERSION:-latest}
-      - BESU_CONFIG_FILE=/config/config.toml
-      - BESU_GENESIS_FILE=/config/genesis.json
-      - BESU_NODE_PRIVATE_KEY_FILE=/opt/besu/keys/nodekey
-      - BESU_MIN_GAS_PRICE=0
-      - BESU_RPC_HTTP_API=EEA,WEB3,ETH,NET,TRACE,DEBUG,ADMIN,PRIV,PERM,${BESU_CONS_ALGO:-IBFT}
-      - BESU_RPC_WS_API=EEA,WEB3,ETH,NET,TRACE,DEBUG,ADMIN,PRIV,PERM,${BESU_CONS_ALGO:-IBFT} 
   entrypoint:
     - /bin/bash
     - -c
@@ -32,14 +33,6 @@ x-besu-def:
   image: hyperledger/besu:${BESU_VERSION:-latest}
   env_file:
     - ./config/besu/.env
-  environment:
-      - OTEL_RESOURCE_ATTRIBUTES=service.name=validator2,service.version=${BESU_VERSION:-latest}
-      - BESU_CONFIG_FILE=/config/config.toml
-      - BESU_GENESIS_FILE=/config/genesis.json
-      - BESU_NODE_PRIVATE_KEY_FILE=/opt/besu/keys/nodekey
-      - BESU_MIN_GAS_PRICE=0
-      - BESU_RPC_HTTP_API=EEA,WEB3,ETH,NET,TRACE,DEBUG,ADMIN,PRIV,PERM,${BESU_CONS_ALGO:-IBFT}
-      - BESU_RPC_WS_API=EEA,WEB3,ETH,NET,TRACE,DEBUG,ADMIN,PRIV,PERM,${BESU_CONS_ALGO:-IBFT} 
   entrypoint:
     - /bin/bash
     - -c
@@ -75,6 +68,7 @@ x-tessera-def:
       cat /data/tm/tessera-config-09.json
       /tessera/bin/tessera -configfile /data/tm/tessera-config-09.json &> /var/log/tessera/tessera-$$HOSTNAME.log | tee -a /var/log/tessera/tessera-$$HOSTNAME.log
 
+
 services:
   portainer:
     image: cr.portainer.io/portainer/portainer-ce:2.9.3
@@ -93,6 +87,9 @@ services:
   validator1:
     << : *besu-bootnode-def
     container_name: validator1
+    environment:
+      <<: *besu-common-env
+      OTEL_RESOURCE_ATTRIBUTES: service.name=validator1,service.version=${BESU_VERSION:-latest}
     volumes:
       - public-keys:/tmp/
       - ./config/besu/:/config
@@ -105,6 +102,9 @@ services:
   validator2:
     << : *besu-def
     container_name: validator2
+    environment:
+      <<: *besu-common-env
+      OTEL_RESOURCE_ATTRIBUTES: service.name=alidator2,service.version=${BESU_VERSION:-latest}
     volumes:
       - public-keys:/opt/besu/public-keys/
       - ./config/besu/:/config
@@ -119,6 +119,9 @@ services:
   validator3:
     << : *besu-def
     container_name: validator3
+    environment:
+      <<: *besu-common-env
+      OTEL_RESOURCE_ATTRIBUTES: service.name=validator3,service.version=${BESU_VERSION:-latest}
     volumes:
       - public-keys:/opt/besu/public-keys/
       - ./config/besu/:/config
@@ -133,6 +136,9 @@ services:
   validator4:
     << : *besu-def
     container_name: validator4
+    environment:
+      <<: *besu-common-env
+      OTEL_RESOURCE_ATTRIBUTES: service.name=validator4,service.version=${BESU_VERSION:-latest}
     volumes:
       - public-keys:/opt/besu/public-keys/
       - ./config/besu/:/config
