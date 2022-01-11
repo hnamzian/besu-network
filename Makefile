@@ -1,6 +1,6 @@
 up:
-	@./init_besu_nodes.sh
-	@./init_tessera_nodes.sh
+	@./scripts/init_besu_nodes.sh
+	@./scripts/init_tessera_nodes.sh
 	@docker-compose up -d
 
 down:
