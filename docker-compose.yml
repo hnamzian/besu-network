@@ -7,6 +7,14 @@ x-besu-bootnode-def:
   image: hyperledger/besu:${BESU_VERSION:-latest}
   env_file:
     - ./config/besu/.env
+  environment:
+      - OTEL_RESOURCE_ATTRIBUTES=service.name=validator1,service.version=${BESU_VERSION:-latest}
+      - BESU_CONFIG_FILE=/config/config.toml
+      - BESU_GENESIS_FILE=/config/genesis.json
+      - BESU_NODE_PRIVATE_KEY_FILE=/opt/besu/keys/nodekey
+      - BESU_MIN_GAS_PRICE=0
+      - BESU_RPC_HTTP_API=EEA,WEB3,ETH,NET,TRACE,DEBUG,ADMIN,PRIV,PERM,${BESU_CONS_ALGO:-IBFT}
+      - BESU_RPC_WS_API=EEA,WEB3,ETH,NET,TRACE,DEBUG,ADMIN,PRIV,PERM,${BESU_CONS_ALGO:-IBFT} 
   entrypoint:
     - /bin/bash
     - -c
@@ -15,14 +23,7 @@ x-besu-bootnode-def:
       cp "/config/${BESU_CONS_ALGO:-IBFT}genesis.json" /config/genesis.json
 
       /opt/besu/bin/besu public-key export --to=/tmp/bootnode_pubkey;
-      /opt/besu/bin/besu \
-      --config-file=/config/config.toml \
-      --p2p-host=$$(hostname -i) \
-      --genesis-file=/config/genesis.json \
-      --node-private-key-file=/opt/besu/keys/nodekey \
-      --min-gas-price=0 \
-      --rpc-http-api=EEA,WEB3,ETH,NET,TRACE,DEBUG,ADMIN,PRIV,PERM,${BESU_CONS_ALGO:-IBFT} \
-      --rpc-ws-api=EEA,WEB3,ETH,NET,TRACE,DEBUG,ADMIN,PRIV,PERM,${BESU_CONS_ALGO:-IBFT} ;
+      /opt/besu/bin/besu --p2p-host=$$(hostname -i)
 
 
 x-besu-def:
@@ -31,6 +32,14 @@ x-besu-def:
   image: hyperledger/besu:${BESU_VERSION:-latest}
   env_file:
     - ./config/besu/.env
+  environment:
+      - OTEL_RESOURCE_ATTRIBUTES=service.name=validator2,service.version=${BESU_VERSION:-latest}
+      - BESU_CONFIG_FILE=/config/config.toml
+      - BESU_GENESIS_FILE=/config/genesis.json
+      - BESU_NODE_PRIVATE_KEY_FILE=/opt/besu/keys/nodekey
+      - BESU_MIN_GAS_PRICE=0
+      - BESU_RPC_HTTP_API=EEA,WEB3,ETH,NET,TRACE,DEBUG,ADMIN,PRIV,PERM,${BESU_CONS_ALGO:-IBFT}
+      - BESU_RPC_WS_API=EEA,WEB3,ETH,NET,TRACE,DEBUG,ADMIN,PRIV,PERM,${BESU_CONS_ALGO:-IBFT} 
   entrypoint:
     - /bin/bash
     - -c
@@ -39,14 +48,7 @@ x-besu-def:
       cp "/config/${BESU_CONS_ALGO:-IBFT}genesis.json" /config/genesis.json
 
       while [ ! -f "/opt/besu/public-keys/bootnode_pubkey" ]; do sleep 5; done ;
-      /opt/besu/bin/besu \
-      --config-file=/config/config.toml \
-      --p2p-host=$$(hostname -i) \
-      --genesis-file=/config/genesis.json \
-      --node-private-key-file=/opt/besu/keys/nodekey \
-      --min-gas-price=0 \
-      --rpc-http-api=EEA,WEB3,ETH,NET,TRACE,DEBUG,ADMIN,PRIV,PERM,${BESU_CONS_ALGO:-IBFT} \
-      --rpc-ws-api=EEA,WEB3,ETH,NET,TRACE,DEBUG,ADMIN,PRIV,PERM,${BESU_CONS_ALGO:-IBFT} ;
+      /opt/besu/bin/besu --p2p-host=$$(hostname -i)
 
 
 x-tessera-def:
@@ -91,8 +93,6 @@ services:
   validator1:
     << : *besu-bootnode-def
     container_name: validator1
-    environment:
-      - OTEL_RESOURCE_ATTRIBUTES=service.name=validator1,service.version=${BESU_VERSION:-latest}
     volumes:
       - public-keys:/tmp/
       - ./config/besu/:/config
@@ -105,8 +105,6 @@ services:
   validator2:
     << : *besu-def
     container_name: validator2
-    environment:
-      - OTEL_RESOURCE_ATTRIBUTES=service.name=validator2,service.version=${BESU_VERSION:-latest}
     volumes:
       - public-keys:/opt/besu/public-keys/
       - ./config/besu/:/config
@@ -121,8 +119,6 @@ services:
   validator3:
     << : *besu-def
     container_name: validator3
-    environment:
-      - OTEL_RESOURCE_ATTRIBUTES=service.name=validator3,service.version=${BESU_VERSION:-latest}
     volumes:
       - public-keys:/opt/besu/public-keys/
       - ./config/besu/:/config
@@ -137,8 +133,6 @@ services:
   validator4:
     << : *besu-def
     container_name: validator4
-    environment:
-      - OTEL_RESOURCE_ATTRIBUTES=service.name=validator4,service.version=${BESU_VERSION:-latest}
     volumes:
       - public-keys:/opt/besu/public-keys/
       - ./config/besu/:/config
