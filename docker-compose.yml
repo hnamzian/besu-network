@@ -73,9 +73,20 @@ x-tessera-def:
       cat /data/tm/tessera-config-09.json
       /tessera/bin/tessera -configfile /data/tm/tessera-config-09.json &> /var/log/tessera/tessera-$$HOSTNAME.log | tee -a /var/log/tessera/tessera-$$HOSTNAME.log
 
-
-
 services:
+  portainer:
+    image: cr.portainer.io/portainer/portainer-ce:2.9.3
+    container_name: portainer
+    restart: always
+    ports:
+      - 8000:8000
+      - 9443:9443 
+      - 9000:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      quorum-dev-quickstart:
 
   validator1:
     << : *besu-bootnode-def
@@ -213,6 +224,7 @@ services:
 
 
 volumes:
+  portainer_data:
   public-keys:
   prometheus:
   grafana:
