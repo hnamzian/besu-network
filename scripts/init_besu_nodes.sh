@@ -29,8 +29,8 @@ generate_network_genesis_and_keys() {
   for (( j=0; j<length; j++ ));
   do
     mkdir -p $BESU_NODES_PATH/"${BESU_NODE_NAMES[$j]}"
-    (cat $BESU_CONFIG_PATH/keys/${NODES[$j]}/key | sed 's/0x//' | tee $BESU_NODES_PATH/"${BESU_NODE_NAMES[$j]}"/nodekey)
-    (cat $BESU_CONFIG_PATH/keys/${NODES[$j]}/key.pub | sed 's/0x//' | tee $BESU_NODES_PATH/"${BESU_NODE_NAMES[$j]}"/nodekey.pub)
+    sed -n 's/0x//' $BESU_CONFIG_PATH/keys/${NODES[$j]}/key | tee $BESU_NODES_PATH/"${BESU_NODE_NAMES[$j]}"/nodekey
+    sed -n 's/0x//' $BESU_CONFIG_PATH/keys/${NODES[$j]}/key.pub | tee $BESU_NODES_PATH/"${BESU_NODE_NAMES[$j]}"/nodekey.pub
     (printf "${NODES[$j]}" > $BESU_NODES_PATH/"${BESU_NODE_NAMES[$j]}"/address)
   done
 
@@ -100,11 +100,11 @@ update_boot_node_configs() {
 echo [BESU] Generate genesis and nodes private keys
 generate_network_genesis_and_keys
 
-echo [BESU] Generate Permissions config file
-generate_permissions_config
+# echo [BESU] Generate Permissions config file
+# generate_permissions_config
 
-echo [BESU] Generate static nodes config
-generate_static_nodes_config
+# echo [BESU] Generate static nodes config
+# generate_static_nodes_config
 
-echo [BESU] Update boot nodes of config file
-update_boot_node_configs
+# echo [BESU] Update boot nodes of config file
+# update_boot_node_configs
