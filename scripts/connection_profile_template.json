@@ -1,0 +1,22 @@
+{
+  "network": {
+    "chainId": "1337",
+    "tesseraPeers": [],
+    "besuPeers": []
+  },
+  "tessera": {
+    "tessera1": {
+      "publicKey": ""
+    },
+    "tessera2": {
+      "publicKey": ""
+    },
+    "tessera3": {
+      "publicKey": ""
+    },
+    "tessera4": {
+      "publicKey": ""
+    }
+  },
+  "besu": {}
+}
