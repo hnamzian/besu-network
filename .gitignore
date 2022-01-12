@@ -5,3 +5,5 @@ config/nodes
 config/besu/IBFTgenesis.json
 config/besu/static-nodes.json 
 config/besu/permissions_config.toml
+
+scripts/connection_profiles
