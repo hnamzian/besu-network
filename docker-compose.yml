@@ -288,7 +288,7 @@ volumes:
 
 networks:
   aus-excise-dev:
-    name: aus-excise-dev
+    name: aus-excise
     driver: bridge
     ipam:
       config:
