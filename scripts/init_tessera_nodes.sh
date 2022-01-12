@@ -10,7 +10,7 @@ generate_tessera_keypairs() {
   for (( j=0; j<length; j++ ));
   do
     mkdir -p $TESSERA_NODES_PATH/"${TESSERA_NODE_NAMES[$j]}"
-    tessera keygen --keyout $PWD/config/nodes/"${TESSERA_NODE_NAMES[$j]}"/nodeKey
+    echo "" | tessera keygen --keyout $PWD/config/nodes/"${TESSERA_NODE_NAMES[$j]}"/nodeKey
   done
 }
 
