@@ -24,7 +24,11 @@ x-besu-bootnode-def:
       cp "/config/${BESU_CONS_ALGO:-IBFT}genesis.json" /config/genesis.json
 
       /opt/besu/bin/besu public-key export --to=/tmp/bootnode_pubkey;
-      /opt/besu/bin/besu --p2p-host=$$(hostname -i)
+      /opt/besu/bin/besu \
+      --p2p-host=$$(hostname -i) \
+      --privacy-enabled \
+      --privacy-public-key-file=/opt/tessera/keys/nodeKey.pub \
+      --privacy-onchain-groups-enabled=false
 
 
 x-besu-def:
@@ -41,7 +45,11 @@ x-besu-def:
       cp "/config/${BESU_CONS_ALGO:-IBFT}genesis.json" /config/genesis.json
 
       while [ ! -f "/opt/besu/public-keys/bootnode_pubkey" ]; do sleep 5; done ;
-      /opt/besu/bin/besu --p2p-host=$$(hostname -i)
+      /opt/besu/bin/besu \
+      --p2p-host=$$(hostname -i) \
+      --privacy-enabled \
+      --privacy-public-key-file=/opt/tessera/keys/nodeKey.pub \
+      --privacy-onchain-groups-enabled=false
 
 
 x-tessera-def:
@@ -84,6 +92,24 @@ services:
     networks:
       aus-excise-dev:
 
+  member1tessera:
+    << : *tessera-def
+    container_name: tessera1
+    ports:
+      - 9081:9080
+    environment:
+      - TESSERA_CONFIG_TYPE="-09"
+      - JAVA_OPTS="-Dlogback.configurationFile=/config/logs/logback.xml"
+    volumes:
+      - ./config/tessera/tessera1/tessera1.conf:/data/tm/tessera-config-09.json
+      - ./config/tessera:/config/logs
+      - ./config/nodes/tessera1:/config/keys
+      - member1tessera:/data
+      - ./logs/tessera:/var/log/tessera/
+    networks:
+      aus-excise-dev:
+        ipv4_address: 172.16.239.26
+
   validator1:
     << : *besu-bootnode-def
     container_name: validator1
@@ -91,15 +117,39 @@ services:
       <<: *besu-common-env
       BESU_PRIVACY_URL: http://tessera1:9101
       OTEL_RESOURCE_ATTRIBUTES: service.name=validator1,service.version=${BESU_VERSION:-latest}
+    ports:
+      - 10000:8545
+      - 10001:8546
     volumes:
       - public-keys:/tmp/
       - ./config/besu/:/config
       - ./config/nodes/validator1:/opt/besu/keys
+      - ./config/nodes/tessera1:/opt/tessera/keys
       - ./logs/besu:/tmp/besu
+    depends_on:
+      - member1tessera
     networks:
       aus-excise-dev:
         ipv4_address: 172.16.239.11
 
+  member2tessera:
+    << : *tessera-def
+    container_name: tessera2
+    ports:
+      - 9082:9080
+    environment:
+      - TESSERA_CONFIG_TYPE="-09"
+      - JAVA_OPTS="-Dlogback.configurationFile=/config/logs/logback.xml"
+    volumes:
+      - ./config/tessera/tessera2/tessera2.conf:/data/tm/tessera-config-09.json
+      - ./config/tessera:/config/logs
+      - ./config/nodes/tessera2:/config/keys
+      - member2tessera:/data
+      - ./logs/tessera:/var/log/tessera/
+    networks:
+      aus-excise-dev:
+        ipv4_address: 172.16.239.27
+        
   validator2:
     << : *besu-def
     container_name: validator2
@@ -107,16 +157,39 @@ services:
       <<: *besu-common-env
       BESU_PRIVACY_URL: http://tessera2:9101
       OTEL_RESOURCE_ATTRIBUTES: service.name=alidator2,service.version=${BESU_VERSION:-latest}
+    ports:
+      - 10002:8545
+      - 10003:8546
     volumes:
       - public-keys:/opt/besu/public-keys/
       - ./config/besu/:/config
       - ./config/nodes/validator2:/opt/besu/keys
+      - ./config/nodes/tessera2:/opt/tessera/keys
       - ./logs/besu:/tmp/besu
     depends_on:
       - validator1
+      - member2tessera
     networks:
       aus-excise-dev:
         ipv4_address: 172.16.239.12
+
+  member3tessera:
+    << : *tessera-def
+    container_name: tessera3
+    ports:
+      - 9083:9080
+    environment:
+      - TESSERA_CONFIG_TYPE="-09"
+      - JAVA_OPTS="-Dlogback.configurationFile=/config/logs/logback.xml"
+    volumes:
+      - ./config/tessera/tessera3/tessera3.conf:/data/tm/tessera-config-09.json
+      - ./config/tessera:/config/logs
+      - ./config/nodes/tessera3:/config/keys
+      - member3tessera:/data
+      - ./logs/tessera:/var/log/tessera/
+    networks:
+      aus-excise-dev:
+        ipv4_address: 172.16.239.28
 
   validator3:
     << : *besu-def
@@ -125,16 +198,39 @@ services:
       <<: *besu-common-env
       BESU_PRIVACY_URL: http://tessera3:9101
       OTEL_RESOURCE_ATTRIBUTES: service.name=validator3,service.version=${BESU_VERSION:-latest}
+    ports:
+      - 10004:8545
+      - 10005:8546
     volumes:
       - public-keys:/opt/besu/public-keys/
       - ./config/besu/:/config
       - ./config/nodes/validator3:/opt/besu/keys
+      - ./config/nodes/tessera3:/opt/tessera/keys
       - ./logs/besu:/tmp/besu
     depends_on:
       - validator1
+      - member3tessera
     networks:
       aus-excise-dev:
         ipv4_address: 172.16.239.13
+
+  member4tessera:
+    << : *tessera-def
+    container_name: tessera4
+    ports:
+      - 9084:9080
+    environment:
+      - TESSERA_CONFIG_TYPE="-09"
+      - JAVA_OPTS="-Dlogback.configurationFile=/config/logs/logback.xml"
+    volumes:
+      - ./config/tessera/tessera4/tessera4.conf:/data/tm/tessera-config-09.json
+      - ./config/tessera:/config/logs
+      - ./config/nodes/tessera4:/config/keys
+      - member4tessera:/data
+      - ./logs/tessera:/var/log/tessera/
+    networks:
+      aus-excise-dev:
+        ipv4_address: 172.16.239.29
 
   validator4:
     << : *besu-def
@@ -143,13 +239,18 @@ services:
       <<: *besu-common-env
       BESU_PRIVACY_URL: http://tessera4:9101
       OTEL_RESOURCE_ATTRIBUTES: service.name=validator4,service.version=${BESU_VERSION:-latest}
+    ports:
+      - 10006:8545
+      - 10007:8546
     volumes:
       - public-keys:/opt/besu/public-keys/
       - ./config/besu/:/config
       - ./config/nodes/validator4:/opt/besu/keys
+      - ./config/nodes/tessera4:/opt/tessera/keys
       - ./logs/besu:/tmp/besu
     depends_on:
       - validator1
+      - member4tessera
     networks:
       aus-excise-dev:
         ipv4_address: 172.16.239.14
@@ -173,79 +274,6 @@ services:
     networks:
       aus-excise-dev:
         ipv4_address: 172.16.239.15
-
-  member1tessera:
-    << : *tessera-def
-    container_name: tessera1
-    ports:
-      - 9081:9080
-    environment:
-      - TESSERA_CONFIG_TYPE="-09"
-      - JAVA_OPTS="-Dlogback.configurationFile=/config/logs/logback.xml"
-    volumes:
-      - ./config/tessera/tessera1/tessera1.conf:/data/tm/tessera-config-09.json
-      - ./config/tessera:/config/logs
-      - ./config/nodes/tessera1:/config/keys
-      - member1tessera:/data
-      - ./logs/tessera:/var/log/tessera/
-    networks:
-      aus-excise-dev:
-        ipv4_address: 172.16.239.26
-
-  member2tessera:
-    << : *tessera-def
-    container_name: tessera2
-    ports:
-      - 9082:9080
-    environment:
-      - TESSERA_CONFIG_TYPE="-09"
-      - JAVA_OPTS="-Dlogback.configurationFile=/config/logs/logback.xml"
-    volumes:
-      - ./config/tessera/tessera2/tessera2.conf:/data/tm/tessera-config-09.json
-      - ./config/tessera:/config/logs
-      - ./config/nodes/tessera2:/config/keys
-      - member2tessera:/data
-      - ./logs/tessera:/var/log/tessera/
-    networks:
-      aus-excise-dev:
-        ipv4_address: 172.16.239.27
-
-  member3tessera:
-    << : *tessera-def
-    container_name: tessera3
-    ports:
-      - 9083:9080
-    environment:
-      - TESSERA_CONFIG_TYPE="-09"
-      - JAVA_OPTS="-Dlogback.configurationFile=/config/logs/logback.xml"
-    volumes:
-      - ./config/tessera/tessera3/tessera3.conf:/data/tm/tessera-config-09.json
-      - ./config/tessera:/config/logs
-      - ./config/nodes/tessera3:/config/keys
-      - member3tessera:/data
-      - ./logs/tessera:/var/log/tessera/
-    networks:
-      aus-excise-dev:
-        ipv4_address: 172.16.239.28
-
-  member4tessera:
-    << : *tessera-def
-    container_name: tessera4
-    ports:
-      - 9084:9080
-    environment:
-      - TESSERA_CONFIG_TYPE="-09"
-      - JAVA_OPTS="-Dlogback.configurationFile=/config/logs/logback.xml"
-    volumes:
-      - ./config/tessera/tessera4/tessera4.conf:/data/tm/tessera-config-09.json
-      - ./config/tessera:/config/logs
-      - ./config/nodes/tessera4:/config/keys
-      - member4tessera:/data
-      - ./logs/tessera:/var/log/tessera/
-    networks:
-      aus-excise-dev:
-        ipv4_address: 172.16.239.29
-
 
 volumes:
   portainer_data:
