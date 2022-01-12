@@ -150,6 +150,26 @@ services:
       quorum-dev-quickstart:
         ipv4_address: 172.16.239.14
 
+  rpcnode:
+    << : *besu-def
+    container_name: rpcnode
+    environment:
+      <<: *besu-common-env
+      OTEL_RESOURCE_ATTRIBUTES: service.name=rpcnode,service.version=${BESU_VERSION:-latest}
+    volumes:
+      - public-keys:/opt/besu/public-keys/
+      - ./config/besu/:/config
+      - ./config/nodes/rpcnode:/opt/besu/keys
+      - ./logs/besu:/tmp/besu
+    depends_on:
+      - validator1
+    ports:
+      - 8545:8545/tcp
+      - 8546:8546/tcp
+    networks:
+      quorum-dev-quickstart:
+        ipv4_address: 172.16.239.15
+
   member1tessera:
     << : *tessera-def
     container_name: tessera1

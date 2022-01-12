@@ -9,9 +9,9 @@ BESU_PERMISSIONS_CONFIG_PATH="./config/besu/permissions_config.toml"
 BESU_STATIC_NODES_CONFIG_PATH="./config/besu/static-nodes.json"
 BESU_CONFIG_FILE_PATH="./config/besu/config.toml"
 
-declare -a BESU_NODE_NAMES=("validator1" "validator2" "validator3" "validator4")
+declare -a BESU_NODE_NAMES=("validator1" "validator2" "validator3" "validator4" "rpcnode")
 declare -a BESU_BOOT_NODES_NAMES=("validator1")
-declare -a BESU_NODE_URLs=("172.16.239.11:30303" "172.16.239.12:30303" "172.16.239.13:30303" "172.16.239.14:30303")
+declare -a BESU_NODE_URLs=("172.16.239.11:30303" "172.16.239.12:30303" "172.16.239.13:30303" "172.16.239.14:30303" "172.16.239.15:30303")
 
 generate_network_genesis_and_keys() {
   besu operator generate-blockchain-config \
