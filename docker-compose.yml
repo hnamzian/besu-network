@@ -82,13 +82,14 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
     networks:
-      quorum-dev-quickstart:
+      aus-excise-dev:
 
   validator1:
     << : *besu-bootnode-def
     container_name: validator1
     environment:
       <<: *besu-common-env
+      BESU_PRIVACY_URL: http://tessera1:9101
       OTEL_RESOURCE_ATTRIBUTES: service.name=validator1,service.version=${BESU_VERSION:-latest}
     volumes:
       - public-keys:/tmp/
@@ -96,7 +97,7 @@ services:
       - ./config/nodes/validator1:/opt/besu/keys
       - ./logs/besu:/tmp/besu
     networks:
-      quorum-dev-quickstart:
+      aus-excise-dev:
         ipv4_address: 172.16.239.11
 
   validator2:
@@ -104,6 +105,7 @@ services:
     container_name: validator2
     environment:
       <<: *besu-common-env
+      BESU_PRIVACY_URL: http://tessera2:9101
       OTEL_RESOURCE_ATTRIBUTES: service.name=alidator2,service.version=${BESU_VERSION:-latest}
     volumes:
       - public-keys:/opt/besu/public-keys/
@@ -113,7 +115,7 @@ services:
     depends_on:
       - validator1
     networks:
-      quorum-dev-quickstart:
+      aus-excise-dev:
         ipv4_address: 172.16.239.12
 
   validator3:
@@ -121,6 +123,7 @@ services:
     container_name: validator3
     environment:
       <<: *besu-common-env
+      BESU_PRIVACY_URL: http://tessera3:9101
       OTEL_RESOURCE_ATTRIBUTES: service.name=validator3,service.version=${BESU_VERSION:-latest}
     volumes:
       - public-keys:/opt/besu/public-keys/
@@ -130,7 +133,7 @@ services:
     depends_on:
       - validator1
     networks:
-      quorum-dev-quickstart:
+      aus-excise-dev:
         ipv4_address: 172.16.239.13
 
   validator4:
@@ -138,6 +141,7 @@ services:
     container_name: validator4
     environment:
       <<: *besu-common-env
+      BESU_PRIVACY_URL: http://tessera4:9101
       OTEL_RESOURCE_ATTRIBUTES: service.name=validator4,service.version=${BESU_VERSION:-latest}
     volumes:
       - public-keys:/opt/besu/public-keys/
@@ -147,7 +151,7 @@ services:
     depends_on:
       - validator1
     networks:
-      quorum-dev-quickstart:
+      aus-excise-dev:
         ipv4_address: 172.16.239.14
 
   rpcnode:
@@ -167,7 +171,7 @@ services:
       - 8545:8545/tcp
       - 8546:8546/tcp
     networks:
-      quorum-dev-quickstart:
+      aus-excise-dev:
         ipv4_address: 172.16.239.15
 
   member1tessera:
@@ -185,7 +189,7 @@ services:
       - member1tessera:/data
       - ./logs/tessera:/var/log/tessera/
     networks:
-      quorum-dev-quickstart:
+      aus-excise-dev:
         ipv4_address: 172.16.239.26
 
   member2tessera:
@@ -203,7 +207,7 @@ services:
       - member2tessera:/data
       - ./logs/tessera:/var/log/tessera/
     networks:
-      quorum-dev-quickstart:
+      aus-excise-dev:
         ipv4_address: 172.16.239.27
 
   member3tessera:
@@ -221,7 +225,7 @@ services:
       - member3tessera:/data
       - ./logs/tessera:/var/log/tessera/
     networks:
-      quorum-dev-quickstart:
+      aus-excise-dev:
         ipv4_address: 172.16.239.28
 
   member4tessera:
@@ -239,7 +243,7 @@ services:
       - member4tessera:/data
       - ./logs/tessera:/var/log/tessera/
     networks:
-      quorum-dev-quickstart:
+      aus-excise-dev:
         ipv4_address: 172.16.239.29
 
 
@@ -255,8 +259,8 @@ volumes:
   member4tessera:
 
 networks:
-  quorum-dev-quickstart:
-    name: quorum-dev-quickstart
+  aus-excise-dev:
+    name: aus-excise-dev
     driver: bridge
     ipam:
       config:
