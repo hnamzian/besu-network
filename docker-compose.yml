@@ -116,8 +116,8 @@ services:
     container_name: ato-validator
     environment:
       <<: *besu-common-env
-      BESU_PRIVACY_URL: http://tessera1:9101
-      OTEL_RESOURCE_ATTRIBUTES: service.name=validator1,service.version=${BESU_VERSION:-latest}
+      BESU_PRIVACY_URL: http://ato-tessera:9101
+      OTEL_RESOURCE_ATTRIBUTES: service.name=ato-validator,service.version=${BESU_VERSION:-latest}
     ports:
       - 20000:8545
       - 20001:8546
@@ -156,8 +156,8 @@ services:
     container_name: 4pillars-validator
     environment:
       <<: *besu-common-env
-      BESU_PRIVACY_URL: http://tessera2:9101
-      OTEL_RESOURCE_ATTRIBUTES: service.name=alidator2,service.version=${BESU_VERSION:-latest}
+      BESU_PRIVACY_URL: http://4pillars-tessera:9101
+      OTEL_RESOURCE_ATTRIBUTES: service.name=4pillars-validator,service.version=${BESU_VERSION:-latest}
     ports:
       - 20002:8545
       - 20003:8546
@@ -197,8 +197,8 @@ services:
     container_name: lark-validator
     environment:
       <<: *besu-common-env
-      BESU_PRIVACY_URL: http://tessera3:9101
-      OTEL_RESOURCE_ATTRIBUTES: service.name=validator3,service.version=${BESU_VERSION:-latest}
+      BESU_PRIVACY_URL: http://lark-tessera:9101
+      OTEL_RESOURCE_ATTRIBUTES: service.name=lark-validator,service.version=${BESU_VERSION:-latest}
     ports:
       - 20004:8545
       - 20005:8546
@@ -238,8 +238,8 @@ services:
     container_name: bundaberg-validator
     environment:
       <<: *besu-common-env
-      BESU_PRIVACY_URL: http://tessera4:9101
-      OTEL_RESOURCE_ATTRIBUTES: service.name=validator4,service.version=${BESU_VERSION:-latest}
+      BESU_PRIVACY_URL: http://bundaberg-tessera:9101
+      OTEL_RESOURCE_ATTRIBUTES: service.name=bundaberg-validator,service.version=${BESU_VERSION:-latest}
     ports:
       - 20006:8545
       - 20007:8546
