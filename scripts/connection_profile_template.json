@@ -5,16 +5,16 @@
     "besuPeers": []
   },
   "tessera": {
-    "tessera1": {
+    "ato-tessera": {
       "publicKey": ""
     },
-    "tessera2": {
+    "4pillars-tessera": {
       "publicKey": ""
     },
-    "tessera3": {
+    "lark-tessera": {
       "publicKey": ""
     },
-    "tessera4": {
+    "bundaberg-tessera": {
       "publicKey": ""
     }
   },

@@ -2,7 +2,7 @@
 
 TESSERA_NODES_PATH="./config/nodes"
 
-declare -a TESSERA_NODE_NAMES=("tessera1" "tessera2" "tessera3" "tessera4")
+declare -a TESSERA_NODE_NAMES=("ato-tessera" "4pillars-tessera" "lark-tessera" "bundaberg-tessera")
 
 generate_tessera_keypairs() {
   length=${#TESSERA_NODE_NAMES[@]}
