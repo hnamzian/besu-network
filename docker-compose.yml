@@ -6,6 +6,7 @@ x-besu-common-env: &besu-common-env
   BESU_GENESIS_FILE: /config/genesis.json
   BESU_NODE_PRIVATE_KEY_FILE: /opt/besu/keys/nodekey
   BESU_MIN_GAS_PRICE: 0
+  BESU_REVERT_REASON_ENABLED: "true"
   BESU_RPC_HTTP_API: EEA,WEB3,ETH,NET,TRACE,DEBUG,ADMIN,PRIV,PERM,${BESU_CONS_ALGO:-IBFT}
   BESU_RPC_WS_API: EEA,WEB3,ETH,NET,TRACE,DEBUG,ADMIN,PRIV,PERM,${BESU_CONS_ALGO:-IBFT} 
 
@@ -92,165 +93,165 @@ services:
     networks:
       aus-excise-dev:
 
-  member1tessera:
+  ATO-Tessera:
     << : *tessera-def
-    container_name: tessera1
+    container_name: ato-tessera
     ports:
       - 9081:9080
     environment:
       - TESSERA_CONFIG_TYPE="-09"
       - JAVA_OPTS="-Dlogback.configurationFile=/config/logs/logback.xml"
     volumes:
-      - ./config/tessera/tessera1/tessera1.conf:/data/tm/tessera-config-09.json
+      - ./config/tessera/ato-tessera/tessera.conf:/data/tm/tessera-config-09.json
       - ./config/tessera:/config/logs
-      - ./config/nodes/tessera1:/config/keys
-      - member1tessera:/data
+      - ./config/nodes/ato-tessera:/config/keys
+      - ato-tessera:/data
       - ./logs/tessera:/var/log/tessera/
     networks:
       aus-excise-dev:
         ipv4_address: 172.16.239.26
 
-  validator1:
+  ATO-Validator:
     << : *besu-bootnode-def
-    container_name: validator1
+    container_name: ato-validator
     environment:
       <<: *besu-common-env
       BESU_PRIVACY_URL: http://tessera1:9101
       OTEL_RESOURCE_ATTRIBUTES: service.name=validator1,service.version=${BESU_VERSION:-latest}
     ports:
-      - 10000:8545
-      - 10001:8546
+      - 20000:8545
+      - 20001:8546
     volumes:
       - public-keys:/tmp/
       - ./config/besu/:/config
-      - ./config/nodes/validator1:/opt/besu/keys
-      - ./config/nodes/tessera1:/opt/tessera/keys
+      - ./config/nodes/ato-validator:/opt/besu/keys
+      - ./config/nodes/ato-tessera:/opt/tessera/keys
       - ./logs/besu:/tmp/besu
     depends_on:
-      - member1tessera
+      - ATO-Tessera
     networks:
       aus-excise-dev:
         ipv4_address: 172.16.239.11
 
-  member2tessera:
+  4Pillars-Tessera:
     << : *tessera-def
-    container_name: tessera2
+    container_name: 4pillars-tessera
     ports:
       - 9082:9080
     environment:
       - TESSERA_CONFIG_TYPE="-09"
       - JAVA_OPTS="-Dlogback.configurationFile=/config/logs/logback.xml"
     volumes:
-      - ./config/tessera/tessera2/tessera2.conf:/data/tm/tessera-config-09.json
+      - ./config/tessera/4pillars-tessera/tessera.conf:/data/tm/tessera-config-09.json
       - ./config/tessera:/config/logs
-      - ./config/nodes/tessera2:/config/keys
-      - member2tessera:/data
+      - ./config/nodes/4pillars-tessera:/config/keys
+      - 4pillars-tessera:/data
       - ./logs/tessera:/var/log/tessera/
     networks:
       aus-excise-dev:
         ipv4_address: 172.16.239.27
         
-  validator2:
+  4Pillars-Validator:
     << : *besu-def
-    container_name: validator2
+    container_name: 4pillars-validator
     environment:
       <<: *besu-common-env
       BESU_PRIVACY_URL: http://tessera2:9101
       OTEL_RESOURCE_ATTRIBUTES: service.name=alidator2,service.version=${BESU_VERSION:-latest}
     ports:
-      - 10002:8545
-      - 10003:8546
+      - 20002:8545
+      - 20003:8546
     volumes:
       - public-keys:/opt/besu/public-keys/
       - ./config/besu/:/config
-      - ./config/nodes/validator2:/opt/besu/keys
-      - ./config/nodes/tessera2:/opt/tessera/keys
+      - ./config/nodes/4pillars-validator:/opt/besu/keys
+      - ./config/nodes/4pillars-tessera:/opt/tessera/keys
       - ./logs/besu:/tmp/besu
     depends_on:
-      - validator1
-      - member2tessera
+      - ATO-Validator
+      - 4Pillars-Tessera
     networks:
       aus-excise-dev:
         ipv4_address: 172.16.239.12
 
-  member3tessera:
+  Lark-Tessera:
     << : *tessera-def
-    container_name: tessera3
+    container_name: lark-tessera
     ports:
       - 9083:9080
     environment:
       - TESSERA_CONFIG_TYPE="-09"
       - JAVA_OPTS="-Dlogback.configurationFile=/config/logs/logback.xml"
     volumes:
-      - ./config/tessera/tessera3/tessera3.conf:/data/tm/tessera-config-09.json
+      - ./config/tessera/lark-tessera/tessera.conf:/data/tm/tessera-config-09.json
       - ./config/tessera:/config/logs
-      - ./config/nodes/tessera3:/config/keys
-      - member3tessera:/data
+      - ./config/nodes/lark-tessera:/config/keys
+      - lark-tessera:/data
       - ./logs/tessera:/var/log/tessera/
     networks:
       aus-excise-dev:
         ipv4_address: 172.16.239.28
 
-  validator3:
+  Lark-Validator:
     << : *besu-def
-    container_name: validator3
+    container_name: lark-validator
     environment:
       <<: *besu-common-env
       BESU_PRIVACY_URL: http://tessera3:9101
       OTEL_RESOURCE_ATTRIBUTES: service.name=validator3,service.version=${BESU_VERSION:-latest}
     ports:
-      - 10004:8545
-      - 10005:8546
+      - 20004:8545
+      - 20005:8546
     volumes:
       - public-keys:/opt/besu/public-keys/
       - ./config/besu/:/config
-      - ./config/nodes/validator3:/opt/besu/keys
-      - ./config/nodes/tessera3:/opt/tessera/keys
+      - ./config/nodes/lark-validator:/opt/besu/keys
+      - ./config/nodes/lark-tessera:/opt/tessera/keys
       - ./logs/besu:/tmp/besu
     depends_on:
-      - validator1
-      - member3tessera
+      - ATO-Validator
+      - Lark-Tessera
     networks:
       aus-excise-dev:
         ipv4_address: 172.16.239.13
 
-  member4tessera:
+  Bundaberg-Tessera:
     << : *tessera-def
-    container_name: tessera4
+    container_name: bundaberg-tessera
     ports:
       - 9084:9080
     environment:
       - TESSERA_CONFIG_TYPE="-09"
       - JAVA_OPTS="-Dlogback.configurationFile=/config/logs/logback.xml"
     volumes:
-      - ./config/tessera/tessera4/tessera4.conf:/data/tm/tessera-config-09.json
+      - ./config/tessera/bundaberg-tessera/tessera.conf:/data/tm/tessera-config-09.json
       - ./config/tessera:/config/logs
-      - ./config/nodes/tessera4:/config/keys
-      - member4tessera:/data
+      - ./config/nodes/bundaberg-tessera:/config/keys
+      - bundaberg-tessera:/data
       - ./logs/tessera:/var/log/tessera/
     networks:
       aus-excise-dev:
         ipv4_address: 172.16.239.29
 
-  validator4:
+  Bundaberg-Validator:
     << : *besu-def
-    container_name: validator4
+    container_name: bundaberg-validator
     environment:
       <<: *besu-common-env
       BESU_PRIVACY_URL: http://tessera4:9101
       OTEL_RESOURCE_ATTRIBUTES: service.name=validator4,service.version=${BESU_VERSION:-latest}
     ports:
-      - 10006:8545
-      - 10007:8546
+      - 20006:8545
+      - 20007:8546
     volumes:
       - public-keys:/opt/besu/public-keys/
       - ./config/besu/:/config
-      - ./config/nodes/validator4:/opt/besu/keys
-      - ./config/nodes/tessera4:/opt/tessera/keys
+      - ./config/nodes/bundaberg-validator:/opt/besu/keys
+      - ./config/nodes/bundaberg-tessera:/opt/tessera/keys
       - ./logs/besu:/tmp/besu
     depends_on:
-      - validator1
-      - member4tessera
+      - ATO-Validator
+      - Bundaberg-Tessera
     networks:
       aus-excise-dev:
         ipv4_address: 172.16.239.14
@@ -267,7 +268,7 @@ services:
       - ./config/nodes/rpcnode:/opt/besu/keys
       - ./logs/besu:/tmp/besu
     depends_on:
-      - validator1
+      - ATO-Validator
     entrypoint:
       - /bin/bash
       - -c
@@ -290,10 +291,10 @@ volumes:
   prometheus:
   grafana:
   cakeshop:
-  member1tessera:
-  member2tessera:
-  member3tessera:
-  member4tessera:
+  ato-tessera:
+  4pillars-tessera:
+  lark-tessera:
+  bundaberg-tessera:
 
 networks:
   aus-excise-dev:
