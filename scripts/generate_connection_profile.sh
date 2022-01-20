@@ -6,8 +6,9 @@ OUTPUT_CCP_NAME="connection_profile.json"
 TESSERA_PUB_KEY_PATH="./config/nodes"
 
 declare -a TESSERA_NODE_NAMES=("ato-tessera" "4pillars-tessera" "lark-tessera" "bundaberg-tessera")
-declare -a BESU_VALIDATOR_NAMES=("ato-validator")
-declare -a BESU_VALIDATOR_URLS=("http://ato-validator:8545")
+declare -a BESU_VALIDATOR_NAMES=("ato-validator" "4pillars-validator" "lark-validator" "bundaberg-validator")
+declare -a BESU_VALIDATOR_URLS=("http://ato-validator:8545" "http://4pillars-validator:8545" "http://lark-validator:8545" "http://bundaberg-validator:8545")
+declare -a BESU_VALIDATOR_EXTERNAL_URLS=("http://localhost:20000" "http://localhost:20002" "http://localhost:20004" "http://localhost:20006")
 
 generate_connection_profile() {
   mkdir $OUTPUT_CCP_DIR
@@ -31,6 +32,9 @@ generate_connection_profile() {
     jq '.network.besuPeers |= . + ["'${BESU_VALIDATOR_NAMES[$j]}'"]' $OUTPUT_CCP_PATH > tmp && mv tmp $OUTPUT_CCP_PATH
 
     jq '.besu."'${BESU_VALIDATOR_NAMES[$j]}'".url = "'${BESU_VALIDATOR_URLS[$j]}'"' $OUTPUT_CCP_PATH > tmp && mv tmp $OUTPUT_CCP_PATH
+
+    jq '.besu."'${BESU_VALIDATOR_NAMES[$j]}'".exposed_url = "'${BESU_VALIDATOR_EXTERNAL_URLS[$j]}'"' $OUTPUT_CCP_PATH > tmp && mv tmp $OUTPUT_CCP_PATH
+
   done
 }
 
